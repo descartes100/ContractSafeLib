@@ -34,7 +34,7 @@ abstract contract PayGuard{
      * @param payee The address of the payee
      * @return Return true if the payee meets the withdrawn condition
      */
-    function withdrawAllowed(address payee) public view virtual returns (bool) {};
+    function withdrawAllowed(address payee) public view virtual returns (bool) {}
 
     /**
      * @dev Payee withdraw payments, a virtual function can be modified 

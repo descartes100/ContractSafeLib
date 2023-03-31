@@ -13,18 +13,18 @@ abstract contract RoleAccess {
         bytes32 adminRole;
     }
     mapping(bytes32 => RoleMember) private _roles;
-    event RoleEndowed(bytes role, address roleAddr, address roleAdmin);
-    event RoleGivedUp(bytes role, address roleAddr);
-    event RoleStoped(bytes role, address roleAddr);
-    event AdminRoleChanged(bytes role, bytes preAdmin, bytes newAdmin);
+    event RoleEndowed(bytes32 role, address roleAddr, address roleAdmin);
+    event RoleGivedUp(bytes32 role, address roleAddr);
+    event RoleStoped(bytes32 role, address roleAddr);
+    event AdminRoleChanged(bytes32 role, bytes32 preAdmin, bytes32 newAdmin);
 
     /**
      * @dev Use onlyRole modifier to make functions only accessible to specified role
      * @param role The bytes representation of the specified role
      */
-    modifier onlyRole(bytes role) virtual{
-        require(_roles[role].members[msg.sender], 
-        abi.encodePacked("Only", toHexString(32, uint256(role)), "has access"));
+    modifier onlyRole(bytes32 role) virtual{
+        require(_roles[role].members[msg.sender], "The sender do not have the role access");
+        _;
     }
 
     /**
@@ -49,7 +49,7 @@ abstract contract RoleAccess {
      * @param role The bytes representation of the specified role
      * @param account The address of the endowed role
      */
-    function endowRole(bytes32 role, address account) public virtual onlyRole(getRoleAdmin(role)) {
+    function endowRole(bytes32 role, address account) public virtual onlyRole(getAdminRole(role)) {
         if (!_roles[role].members[account]) {
             _roles[role].members[account] = true;
             emit RoleEndowed(role, account, msg.sender);
@@ -83,7 +83,7 @@ abstract contract RoleAccess {
      * @param role The bytes representation of the specified role
      * @param account The address of the role account
      */
-    function stopRole(bytes32 role, address account) public virtual onlyRole(getRoleAdmin(role)) {
+    function stopRole(bytes32 role, address account) public virtual onlyRole(getAdminRole(role)) {
         if (_roles[role].members[account]) {
             _roles[role].members[account] = false;
             emit RoleStoped(role, account);
@@ -96,7 +96,7 @@ abstract contract RoleAccess {
      * @param role The bytes representation of the role
      */
     function setAdminRole(bytes32 adminRole, bytes32 role) internal virtual {
-        bytes preAdminRole = getAdminRole(role);
+        bytes32 preAdminRole = getAdminRole(role);
         _roles[role].adminRole = adminRole;
         emit AdminRoleChanged(role, preAdminRole, adminRole);
     }
