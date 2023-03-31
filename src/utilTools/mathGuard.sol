@@ -37,7 +37,7 @@ library MathGuard {
      * @return The multiplication of a and b
      */
     function mul(uint256 a, uint256 b) internal pure returns(uint256) {
-        if (a == 0) return(0)l
+        if (a == 0) return(0);
         uint256 c = a * b;
         require(c / a == b, "Overflow occurs on multiplication");
         return(c);
