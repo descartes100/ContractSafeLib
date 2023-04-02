@@ -15,7 +15,7 @@ abstract contract RoleAccess {
     mapping(bytes32 => RoleMember) private _roles;
     event RoleEndowed(bytes32 role, address roleAddr, address roleAdmin);
     event RoleGivedUp(bytes32 role, address roleAddr);
-    event RoleStoped(bytes32 role, address roleAddr);
+    event RoleStopped(bytes32 role, address roleAddr);
     event AdminRoleChanged(bytes32 role, bytes32 preAdmin, bytes32 newAdmin);
 
     /**
@@ -86,7 +86,7 @@ abstract contract RoleAccess {
     function stopRole(bytes32 role, address account) public virtual onlyRole(getAdminRole(role)) {
         if (_roles[role].members[account]) {
             _roles[role].members[account] = false;
-            emit RoleStoped(role, account);
+            emit RoleStopped(role, account);
         }
     }
 
